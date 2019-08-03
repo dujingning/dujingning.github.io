@@ -99,14 +99,17 @@ Another closely related `I/O model` is to use multithreading with blocking I/O. 
 The `signal-driven I/O model` uses signals, telling the kernel to notify us with the `SIGIO` signal when the descriptor is ready. The figure is below:
 
 ```markdown
-1. We first enable the socket for signal-driven I/O (Section 25.2) and install a signal handler 
-using the sigaction system call. The return from this system call is immediate and our process 
+1. We first enable the socket for `signal-driven I/O` and install a signal handler 
+using the `sigaction` system call. The return from this system call is immediate and our process 
 continues; it is not blocked.
-2. When the datagram is ready to be read, the SIGIO signal is generated for our process. We can either:
-```
+2. When the datagram is ready to be read, the `SIGIO` signal is generated for our process. 
+**We can either:**
  --read the datagram from the signal handler by calling recvfrom and then notify the main loop 
  that the data is ready to be processed (Section 25.3)
+ 
  --notify the main loop and let it read the datagram.
+```
+ 
 
 The advantage to this model is that we are not blocked while waiting for the datagram to arrive. The main loop can continue executing and just wait to be notified by the signal handler that either the data is ready to process or the datagram is ready to be read.
 

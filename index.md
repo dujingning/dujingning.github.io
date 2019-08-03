@@ -132,6 +132,34 @@ This system call returns immediately and our process is not blocked while waitin
 
 2. We assume in this example that we ask the kernel to generate some signal when the operation is complete. This signal is not generated until the data has been copied into our application buffer, which is different from the signal-driven I/O model.
 
+### `select` Function
+
+The `select` function allows the process to instruct the kernel to either:
+```markdown
+Wait for any one of multiple events to occur and to wake up the process only when one or more of these events occurs, or
+When a specified amount of time has passed.
+```
+This means that we tell the kernel what descriptors we are interested in (for reading, writing, or an exception condition) and how long to wait. The descriptors in which we are interested are not restricted to sockets; any descriptor can be tested using select.
+
+```markdown
+#include <sys/select.h>
+#include <sys/time.h>
+
+int select(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
+           const struct timeval *timeout);
+
+/* Returns: positive count of ready descriptors, 0 on timeout, –1 on error */
+```
+**The timeout argument**
+
+The timeout argument tells the kernel how long to wait for one of the specified descriptors to become ready. A timeval structure specifies the number of seconds and microseconds.
+
+```markdown
+struct timeval  {
+  long   tv_sec;          /* seconds */
+  long   tv_usec;         /* microseconds */
+};
+```
 **|| this is collected by 杜竞宁 || [click here to the top](http://xpfan.top) || 2019.8.3 星期六 || **
 
 # end

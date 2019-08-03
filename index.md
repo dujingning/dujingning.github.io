@@ -38,9 +38,11 @@ We first examine the basic differences in the five I/O models that are available
 ```
 There are normally two distinct phases for an input operation:
 ```markdown
-1. Waiting for the data to be ready. This involves waiting for data to arrive on the network. When the packet arrives, it is copied into a buffer within the kernel.
+1. Waiting for the data to be ready. This involves waiting for data to arrive on the network. When 
+the packet arrives, it is copied into a buffer within the kernel.
 
-2. Copying the data from the kernel to the process. This means copying the (ready) data from the kernel's buffer into our application buffer.
+2. Copying the data from the kernel to the process. This means copying the (ready) data from the 
+kernel's buffer into our application buffer.
 ```
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 

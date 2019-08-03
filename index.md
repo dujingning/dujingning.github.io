@@ -10,8 +10,11 @@
    We want to be notified if one or more I/O conditions are ready (i.e., input is ready to be read, or the descriptor is capable of taking more output). This capability is called I/O multiplexing and is provided by the select and poll functions, as well as a newer POSIX variation of the former, called pselect.
 
 I/O multiplexing is typically used in networking applications in the following scenarios:
+
 ```markdown
-**-> When a client is handling multiple descriptors (normally interactive input and a network socket)
+
+**the point
+-> When a client is handling multiple descriptors (normally interactive input and a network socket)
 
 -> When a client to handle multiple sockets at the same time (this is possible, but rare)
 
@@ -20,6 +23,7 @@ I/O multiplexing is typically used in networking applications in the following s
 -> If a server handles both TCP and UDP
 
 -> If a server handles multiple services and perhaps multiple protocols
+
 ```
 I/O multiplexing is not limited to network programming. Many nontrivial applications find a need for these techniques.
 

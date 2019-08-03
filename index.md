@@ -12,7 +12,6 @@
 I/O multiplexing is typically used in networking applications in the following scenarios:
 
 ```markdown
-
 **the point**
 
 - When a client is handling multiple descriptors (normally interactive input and a network socket)
@@ -50,15 +49,15 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 
 ### Blocking I/O Model
 
-The most prevalent model for I/O is the blocking I/O model (which we have used for all our examples in the previous sections). By default, all sockets are blocking. The scenario is shown in the figure below(you need to click that link for viewing):
+The most prevalent model for I/O is the `blocking I/O model` (which we have used for all our examples in the previous sections). By default, all sockets are `blocking`. The scenario is shown in the figure below(you need to click that link for viewing):
 
 [Blocking I/O Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_photo.png)
 
 We use UDP for this example instead of TCP because with UDP, the concept of data being "ready" to read is simple: either an entire datagram has been received or it has not. With TCP it gets more complicated, as additional variables such as the socket's low-water mark come into play.
 
-We also refer to recvfrom as a system call to differentiate between our application and the kernel, regardless of how recvfrom is implemented (system call on BSD and function that invokes getmsg system call on System V). There is normally a switch from running in the application to running in the kernel, followed at some time later by a return to the application.
+We also refer to `recvfrom` as a system call to differentiate between our application and the kernel, regardless of how `recvfrom` is implemented (system call on BSD and function that invokes getmsg system call on System V). There is normally a switch from running in the application to running in the kernel, followed at some time later by a return to the application.
 
-In the figure above, the process calls recvfrom and the system call does not return until the datagram arrives and is copied into our application buffer, or an error occurs. The most common error is the system call being interrupted by a signal, as we described in Section 5.9. We say that the process is blocked the entire time from when it calls recvfrom until it returns. When recvfrom returns successfully, our application processes the datagram.
+In the figure above, the process calls recvfrom and the system call does not return until the datagram arrives and is copied into our application buffer, or an error occurs. The most common error is the system call being interrupted by a signal, as we described. We say that the process is blocked the entire time from when it calls recvfrom until it returns. When `recvfrom` returns successfully, our application processes the datagram.
 
 ### Nonblocking I/O Model
 
@@ -69,7 +68,7 @@ When a socket is set to be `nonblocking`, we are telling the kernel "when an I/O
 1. For the first three `recvfrom`, there is no data to return and the kernel immediately returns an 
 error of EWOULDBLOCK.
 2. For the fourth time we call `recvfrom`, a datagram is ready, it is copied into our application 
-buffer, and recvfrom returns successfully. We then process the data.
+buffer, and `recvfrom` returns successfully. We then process the data.
 ```
 
 When an application sits in a loop calling `recvfrom` on a `nonblocking` descriptor like this, it is called `polling`. The application is continually `polling` the kernel to see if some operation is ready. This is often a waste of CPU time, but this model is occasionally encountered, normally on systems dedicated to one function.
@@ -94,6 +93,33 @@ we can `wait` for more than one descriptor to be ready (see the `select` functio
 **Multithreading with blocking I/O**
 
 Another closely related `I/O model` is to use multithreading with blocking I/O. That model very closely resembles the model described above, except that instead of using `select` to block on multiple file descriptors, the program uses multiple threads (one per file descriptor), and each thread is then free to call blocking system calls like `recvfrom`.
+
+### Signal-Driven I/O Model
+
+The `signal-driven I/O model` uses signals, telling the kernel to notify us with the `SIGIO` signal when the descriptor is ready. The figure is below:
+
+```markdown
+1. We first enable the socket for signal-driven I/O (Section 25.2) and install a signal handler 
+using the sigaction system call. The return from this system call is immediate and our process 
+continues; it is not blocked.
+2. When the datagram is ready to be read, the SIGIO signal is generated for our process. We can either:
+```
+ --read the datagram from the signal handler by calling recvfrom and then notify the main loop 
+ that the data is ready to be processed (Section 25.3)
+ --notify the main loop and let it read the datagram.
+
+The advantage to this model is that we are not blocked while waiting for the datagram to arrive. The main loop can continue executing and just wait to be notified by the signal handler that either the data is ready to process or the datagram is ready to be read.
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```markdown

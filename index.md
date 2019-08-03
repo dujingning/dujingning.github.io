@@ -222,7 +222,7 @@ The return value from this function indicates the total number of bits that are 
 
 
 
-**|| this is collected by 杜竞宁 || [click here to the top](http://xpfan.top) || 2019.8.3 星期六 || **
+**this is collected by 杜竞宁 -- [click here to the top](http://xpfan.top) -- 2019.8.3 星期六**
 
 # end
 

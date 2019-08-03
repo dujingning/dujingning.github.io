@@ -44,9 +44,15 @@ the packet arrives, it is copied into a buffer within the kernel.
 2. Copying the data from the kernel to the process. This means copying the (ready) data from the 
 kernel's buffer into our application buffer.
 ```
-[图解](https://notes.shichao.io/unp/figure_6.1.png)
+
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+
+### Blocking I/O Model
+
+The most prevalent model for I/O is the blocking I/O model (which we have used for all our examples in the previous sections). By default, all sockets are blocking. The scenario is shown in the figure below:
+
+[Blocking IO Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_photo.png)
 
 ```markdown
 Syntax highlighted code block

@@ -1,6 +1,6 @@
  Linux网络编程                                 [刷新](http://xpfan.top) 
 ## I/O多路复用总结(I/O Multiplexing)
-[Image](https://notes.shichao.io/unp/figure_6.1.png)
+
 ### The `select` and `poll` Functions Introduction(select 与 poll函数介绍)
 
 **Background** 
@@ -44,6 +44,8 @@ the packet arrives, it is copied into a buffer within the kernel.
 2. Copying the data from the kernel to the process. This means copying the (ready) data from the 
 kernel's buffer into our application buffer.
 ```
+[图解](https://notes.shichao.io/unp/figure_6.1.png)
+
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
 ```markdown
@@ -61,7 +63,7 @@ Syntax highlighted code block
 
 **Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](http://b338.photo.store.qq.com/psb?/V108mPtR1wBgYE/h9W*MZaJtsq9qHtiqoJs6PrIOcOfKxgJKQCU4xJde1k!/b/dFIBAAAAAAAA&bo=gAIkBaAFkAsRCaM!&rf=viewer_4)
+[Link](url) and ![Image](src)
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).

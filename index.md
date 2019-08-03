@@ -78,7 +78,22 @@ When an application sits in a loop calling `recvfrom` on a `nonblocking` descrip
 
 With `I/O multiplexing`, we call `select` or `poll` and `block` in one of these two system calls, instead of `blocking` in the actual I/O system call. The figure is a summary of the `I/O multiplexing model`(you need to click that link for viewing):
 
-[I/O Multiplexing Model图解](https://cdn-ossd.zipjpg.com/free/98321944e0eddf3c659bfcf67ce19560_2_3_art.png)
+[I/O Multiplexing Model图解](https://cdn-ossd.zipjpg.com/free/46f250654d113f51d7e6b0e60738e44b_2_1_photo.png)
+
+We `block` in a call to `select`, waiting for the datagram socket to be readable. When `select` returns that the socket is readable, we then call `recvfrom` to copy the datagram into our application buffer.
+
+**Comparing to the blocking I/O model**
+
+[Comparing to the blocking I/O model图解](https://cdn-ossd.zipjpg.com/free/47f9f62ac85d6b89dac06253aca41709_2_1_photo.png)
+
+`Disadvantage`
+using `select` requires two system calls (`select` and `recvfrom`) instead of one
+`Advantage`
+we can `wait` for more than one descriptor to be ready (see the `select` function later in this chapter)
+
+**Multithreading with blocking I/O**
+
+Another closely related `I/O model` is to use multithreading with blocking I/O. That model very closely resembles the model described above, except that instead of using `select` to block on multiple file descriptors, the program uses multiple threads (one per file descriptor), and each thread is then free to call blocking system calls like `recvfrom`.
 
 
 ```markdown

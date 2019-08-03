@@ -118,7 +118,7 @@ The advantage to this model is that we are not blocked while waiting for the dat
 
 `Asynchronous I/O` is defined by the `POSIX` specification, and various differences in the real-time functions that appeared in the various standards which came together to form the current `POSIX` specification have been reconciled.
 
-These functions work by telling the kernel to start the operation and to notify us when the entire operation (including the copy of the data from the kernel to our buffer) is complete. `The main difference between this model and the `signal-driven I/O` model is that with `signal-driven I/O`, the kernel tells us when an I/O operation can be initiated, but with `asynchronous I/O`, the kernel tells us when an I/O operation is complete.` See the figure below for example:
+These functions work by telling the kernel to start the operation and to notify us when the entire operation (including the copy of the data from the kernel to our buffer) is complete. `The main difference between this model and the signal-driven I/O model is that with signal-driven I/O, the kernel tells us when an I/O operation can be initiated, but with asynchronous I/O, the kernel tells us when an I/O operation is complete.` See the figure below for example:
 
 [Comparing to the blocking I/O model图解](https://cdn-ossd.zipjpg.com/free/b3925a28006fbcce5585e2690b5841e3_2_1_photo.png)
 
@@ -132,11 +132,11 @@ This system call returns immediately and our process is not blocked while waitin
 
 2. We assume in this example that we ask the kernel to generate some signal when the operation is complete. This signal is not generated until the data has been copied into our application buffer, which is different from the signal-driven I/O model.
 
-### `select` Function
+### select Function
 
 The `select` function allows the process to instruct the kernel to either:
 ```markdown
-Wait for any one of multiple events to occur and to wake up the process only when one or more of these events occurs, or
+- Wait for any one of multiple events to occur and to wake up the process only when one or more of these events occurs, or
 When a specified amount of time has passed.
 ```
 This means that we tell the kernel what descriptors we are interested in (for reading, writing, or an exception condition) and how long to wait. The descriptors in which we are interested are not restricted to sockets; any descriptor can be tested using select.
@@ -150,7 +150,7 @@ int select(int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset,
 
 /* Returns: positive count of ready descriptors, 0 on timeout, –1 on error */
 ```
-**The timeout argument**
+**The timeout argument:**
 
 The timeout argument tells the kernel how long to wait for one of the specified descriptors to become ready. A timeval structure specifies the number of seconds and microseconds.
 
@@ -160,6 +160,52 @@ struct timeval  {
   long   tv_usec;         /* microseconds */
 };
 ```
+There are three possibilities for the timeout:
+```mark
+1. Wait forever (timeout is specified as a null pointer). Return only when one of the specified descriptors is ready for I/O.
+2. Wait up to a fixed amount of time (timeout points to a `timeval` structure). Return when one of the specified descriptors is ready for I/O, but do not wait beyond the number of seconds and microseconds specified in the `timeval` structure.
+3. Do not wait at all (timeout points to a `timeval` structure and the timer value is 0, i.e. the number of seconds and microseconds specified by the structure are 0). Return immediately after checking the descriptors. This is called `polling`.
+```
+#### **Note:**
+
+1. The wait in the first two scenarios is normally interrupted if the process catches a signal and returns from the signal handler. For portability, we must be prepared for `select` to return an error of `EINTR` if we are catching signals. Berkeley-derived kernels never automatically restart select.
+2. Although the `timeval` structure has a microsecond field tv_usec, the actual resolution supported by the kernel is often more coarse. Many Unix kernels round the timeout value up to a multiple of 10 ms. There is also a scheduling latency involved, meaning it takes some time after 3. the timer expires before the kernel schedules this process to run.
+On some systems, the timeval structure can represent values that are not supported by select; it will fail with EINVAL if the tv_sec field in the timeout is over 100 million seconds.
+4. The const qualifier on the timeout argument means it is not modified by select on return.
+
+**The descriptor sets arguments:***
+The three middle arguments, readset, writeset, and exceptset, specify the descriptors that we want the kernel to test for reading, writing, and exception conditions. There are only two exception conditions currently supported:
+1. The arrival of out-of-band data for a socket.
+2. The presence of control status information to be read from the master side of a pseudo-terminal that has been put into packet mode. (Not covered in UNP)
+
+`select` uses descriptor sets, typically an array of integers, with each bit in each integer corresponding to a descriptor. For example, using 32-bit integers, the first element of the array corresponds to descriptors 0 through 31, the second element of the array corresponds to descriptors 32 through 63, and so on. All the implementation details are irrelevant to the application and are hidden in the `fd_set` datatype and the following four macros:
+
+```markdown
+void FD_ZERO(fd_set *fdset);         /* clear all bits in fdset */
+void FD_SET(int fd, fd_set *fdset);  /* turn on the bit for fd in fdset */
+void FD_CLR(int fd, fd_set *fdset);  /* turn off the bit for fd in fdset */
+int FD_ISSET(int fd, fd_set *fdset); /* is the bit for fd on in fdset ? */
+```
+
+We allocate a descriptor set of the fd_set datatype, we set and test the bits in the set using these macros, and we can also assign it to another descriptor set across an equals sign (=) in C.
+
+An array of integers using one bit per descriptor, is just one possible way to implement select. Nevertheless, it is common to refer to the individual descriptors within a descriptor set as bits, as in "turn on the bit for the listening descriptor in the read set."
+
+The following example defines a variable of type fd_set and then turn on the bits for descriptors 1, 4, and 5:
+```markdown
+fd_set rset;
+
+FD_ZERO(&rset);          /* initialize the set: all bits off */
+FD_SET(1, &rset);        /* turn on bit for fd 1 */
+FD_SET(4, &rset);        /* turn on bit for fd 4 */
+FD_SET(5, &rset);        /* turn on bit for fd 5 */
+```
+It is important to initialize the set, since unpredictable results can occur if the set is allocated as an automatic variable and not initialized.
+
+Any of the middle three arguments to `select`, readset, writeset, or exceptset, can be specified as a null pointer if we are not interested in that condition. Indeed, if all three pointers are null, then we have a higher precision timer than the normal Unix `sleep` function. The `poll` function provides similar functionality.
+
+
+
 **|| this is collected by 杜竞宁 || [click here to the top](http://xpfan.top) || 2019.8.3 星期六 || **
 
 # end

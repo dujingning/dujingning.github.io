@@ -1,6 +1,7 @@
-## 关于I/O多路复用(I/O Multiplexing)
+ Linux网络编程 
+## I/O多路复用总结(I/O Multiplexing)
 
-### The select and poll Functions Introduction¶
+### The `select` and `poll` Functions Introduction(select 与 poll函数)
 
 You can use the [editor on GitHub](http://xpfan.top) to maintain and preview the content for your website in Markdown files.
 

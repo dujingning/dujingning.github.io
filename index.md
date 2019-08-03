@@ -50,10 +50,21 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 
 ### Blocking I/O Model
 
-The most prevalent model for I/O is the blocking I/O model (which we have used for all our examples in the previous sections). By default, all sockets are blocking. The scenario is shown in the figure below:
+The most prevalent model for I/O is the blocking I/O model (which we have used for all our examples in the previous sections). By default, all sockets are blocking. The scenario is shown in the figure below(you need to click that link for viewing):
 
 [Blocking IO Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_photo.png)
 
+We use UDP for this example instead of TCP because with UDP, the concept of data being "ready" to read is simple: either an entire datagram has been received or it has not. With TCP it gets more complicated, as additional variables such as the socket's low-water mark come into play.
+
+We also refer to recvfrom as a system call to differentiate between our application and the kernel, regardless of how recvfrom is implemented (system call on BSD and function that invokes getmsg system call on System V). There is normally a switch from running in the application to running in the kernel, followed at some time later by a return to the application.
+
+In the figure above, the process calls recvfrom and the system call does not return until the datagram arrives and is copied into our application buffer, or an error occurs. The most common error is the system call being interrupted by a signal, as we described in Section 5.9. We say that the process is blocked the entire time from when it calls recvfrom until it returns. When recvfrom returns successfully, our application processes the datagram.
+
+### Nonblocking I/O Model
+
+When a socket is set to be nonblocking, we are telling the kernel "when an I/O operation that I request cannot be completed without putting the process to sleep, do not put the process to sleep, but return an error instead". The figure is below(you need to click that link for viewing):
+
+[Nonblocking IO Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_art.png)
 ```markdown
 Syntax highlighted code block
 

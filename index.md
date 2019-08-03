@@ -103,6 +103,7 @@ The `signal-driven I/O model` uses signals, telling the kernel to notify us with
 using the `sigaction` system call. The return from this system call is immediate and our process 
 continues; it is not blocked.
 2. When the datagram is ready to be read, the `SIGIO` signal is generated for our process. 
+
 **We can either:**
  --read the datagram from the signal handler by calling recvfrom and then notify the main loop 
  that the data is ready to be processed (Section 25.3)
@@ -110,8 +111,25 @@ continues; it is not blocked.
  --notify the main loop and let it read the datagram.
 ```
  
-
 The advantage to this model is that we are not blocked while waiting for the datagram to arrive. The main loop can continue executing and just wait to be notified by the signal handler that either the data is ready to process or the datagram is ready to be read.
+
+### Asynchronous I/O Model
+
+`Asynchronous I/O` is defined by the `POSIX` specification, and various differences in the real-time functions that appeared in the various standards which came together to form the current `POSIX` specification have been reconciled.
+
+These functions work by telling the kernel to start the operation and to notify us when the entire operation (including the copy of the data from the kernel to our buffer) is complete. The main difference between this model and the `signal-driven I/O` model is that with `signal-driven I/O`, the kernel tells us when an I/O operation can be initiated, but with `asynchronous I/O`, the kernel tells us when an I/O operation is complete. See the figure below for example:
+
+[Comparing to the blocking I/O model图解]()
+
+1. We call `aio_read` (the `POSIX` `asynchronous I/O` functions begin with`aio_` or `lio_`) and pass the kernel the following:
+```markdown
+·- descriptor, buffer pointer, buffer size (the same three arguments for read),
+.- file offset (similar to lseek).
+·- and how to notify us when the entire operation is complete.
+```
+This system call returns immediately and our process is not blocked while waiting for the I/O to complete.
+
+2. We assume in this example that we ask the kernel to generate some signal when the operation is complete. This signal is not generated until the data has been copied into our application buffer, which is different from the signal-driven I/O model.
 
 
 

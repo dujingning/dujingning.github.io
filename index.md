@@ -133,3 +133,34 @@ This system call returns immediately and our process is not blocked while waitin
 2. We assume in this example that we ask the kernel to generate some signal when the operation is complete. This signal is not generated until the data has been copied into our application buffer, which is different from the signal-driven I/O model.
 
 **| this is collected by 杜竞宁 | [click here to the top](http://xpfan.top) | 2019.8.3 星期六 | **
+
+# end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**end line**

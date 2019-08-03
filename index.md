@@ -13,19 +13,27 @@ I/O multiplexing is typically used in networking applications in the following s
 
 ```markdown
 
-**the point
+**the point**
 
--> When a client is handling multiple descriptors (normally interactive input and a network socket)
--> When a client to handle multiple sockets at the same time (this is possible, but rare)
--> If a TCP server handles both a listening socket and its connected sockets
--> If a server handles both TCP and UDP
--> If a server handles multiple services and perhaps multiple protocols
+- When a client is handling multiple descriptors (normally interactive input and a network socket)
+- When a client to handle multiple sockets at the same time (this is possible, but rare)
+- If a TCP server handles both a listening socket and its connected sockets
+- If a server handles both TCP and UDP
+- If a server handles multiple services and perhaps multiple protocols
 ```
 I/O multiplexing is not limited to network programming. Many nontrivial applications find a need for these techniques.
 
 
 ### I/O Models
 
+We first examine the basic differences in the five I/O models that are available to us under Unix:
+```markdown
+- blocking I/O
+- nonblocking I/O
+- I/O multiplexing (select and poll)
+- signal driven I/O (SIGIO)
+- asynchronous I/O (the POSIX aio_ functions)
+```
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
 ```markdown

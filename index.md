@@ -28,6 +28,8 @@ I/O multiplexing is not limited to network programming. Many nontrivial applicat
 
 We first examine the basic differences in the five I/O models that are available to us under Unix:
 ```markdown
+**five I/O models**
+
 - blocking I/O
 - nonblocking I/O
 - I/O multiplexing (select and poll)

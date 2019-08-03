@@ -52,7 +52,7 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 
 The most prevalent model for I/O is the blocking I/O model (which we have used for all our examples in the previous sections). By default, all sockets are blocking. The scenario is shown in the figure below(you need to click that link for viewing):
 
-[Blocking IO Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_photo.png)
+[Blocking I/O Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_photo.png)
 
 We use UDP for this example instead of TCP because with UDP, the concept of data being "ready" to read is simple: either an entire datagram has been received or it has not. With TCP it gets more complicated, as additional variables such as the socket's low-water mark come into play.
 
@@ -62,9 +62,25 @@ In the figure above, the process calls recvfrom and the system call does not ret
 
 ### Nonblocking I/O Model
 
-When a socket is set to be nonblocking, we are telling the kernel "when an I/O operation that I request cannot be completed without putting the process to sleep, do not put the process to sleep, but return an error instead". The figure is below(you need to click that link for viewing):
+When a socket is set to be `nonblocking`, we are telling the kernel "when an I/O operation that I request cannot be completed without putting the process to sleep, do not put the process to sleep, but return an error instead". The figure is below(you need to click that link for viewing):
 
-[Nonblocking IO Model图解](https://cdn-ossd.zipjpg.com/free/3849f02b220d363ad87602f2e26dad12_2_2_art.png)
+[Nonblocking I/O Model图解](https://cdn-ossd.zipjpg.com/free/98321944e0eddf3c659bfcf67ce19560_2_3_art.png)
+```markdown
+1. For the first three `recvfrom`, there is no data to return and the kernel immediately returns an 
+error of EWOULDBLOCK.
+2. For the fourth time we call `recvfrom`, a datagram is ready, it is copied into our application 
+buffer, and recvfrom returns successfully. We then process the data.
+```
+
+When an application sits in a loop calling `recvfrom` on a `nonblocking` descriptor like this, it is called `polling`. The application is continually `polling` the kernel to see if some operation is ready. This is often a waste of CPU time, but this model is occasionally encountered, normally on systems dedicated to one function.
+
+### I/O Multiplexing Model
+
+With `I/O multiplexing`, we call `select` or `poll` and `block` in one of these two system calls, instead of `blocking` in the actual I/O system call. The figure is a summary of the `I/O multiplexing model`(you need to click that link for viewing):
+
+[I/O Multiplexing Model图解](https://cdn-ossd.zipjpg.com/free/98321944e0eddf3c659bfcf67ce19560_2_3_art.png)
+
+
 ```markdown
 Syntax highlighted code block
 

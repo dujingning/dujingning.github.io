@@ -30,11 +30,11 @@ We first examine the basic differences in the five I/O models that are available
 ```markdown
 **five I/O models**
 
-- blocking I/O
-- nonblocking I/O
-- I/O multiplexing (select and poll)
-- signal driven I/O (SIGIO)
-- asynchronous I/O (the POSIX aio_ functions)
+1. blocking I/O
+2. nonblocking I/O
+3. I/O multiplexing (select and poll)
+4. signal driven I/O (SIGIO)
+5. asynchronous I/O (the POSIX aio_ functions)
 ```
 There are normally two distinct phases for an input operation:
 ```markdown

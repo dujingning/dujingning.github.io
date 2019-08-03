@@ -97,6 +97,7 @@ Another closely related `I/O model` is to use multithreading with blocking I/O. 
 ### Signal-Driven I/O Model
 
 The `signal-driven I/O model` uses signals, telling the kernel to notify us with the `SIGIO` signal when the descriptor is ready. The figure is below:
+[Signal-Driven I/O Model图解](https://cdn-ossd.zipjpg.com/free/47f9f62ac85d6b89dac06253aca41709_2_1_photo.png)
 
 ```markdown
 1. We first enable the socket for `signal-driven I/O` and install a signal handler 
@@ -117,9 +118,9 @@ The advantage to this model is that we are not blocked while waiting for the dat
 
 `Asynchronous I/O` is defined by the `POSIX` specification, and various differences in the real-time functions that appeared in the various standards which came together to form the current `POSIX` specification have been reconciled.
 
-These functions work by telling the kernel to start the operation and to notify us when the entire operation (including the copy of the data from the kernel to our buffer) is complete. The main difference between this model and the `signal-driven I/O` model is that with `signal-driven I/O`, the kernel tells us when an I/O operation can be initiated, but with `asynchronous I/O`, the kernel tells us when an I/O operation is complete. See the figure below for example:
+These functions work by telling the kernel to start the operation and to notify us when the entire operation (including the copy of the data from the kernel to our buffer) is complete. `The main difference between this model and the `signal-driven I/O` model is that with `signal-driven I/O`, the kernel tells us when an I/O operation can be initiated, but with `asynchronous I/O`, the kernel tells us when an I/O operation is complete.` See the figure below for example:
 
-[Comparing to the blocking I/O model图解]()
+[Comparing to the blocking I/O model图解](https://cdn-ossd.zipjpg.com/free/b3925a28006fbcce5585e2690b5841e3_2_1_photo.png)
 
 1. We call `aio_read` (the `POSIX` `asynchronous I/O` functions begin with`aio_` or `lio_`) and pass the kernel the following:
 ```markdown
@@ -131,42 +132,4 @@ This system call returns immediately and our process is not blocked while waitin
 
 2. We assume in this example that we ask the kernel to generate some signal when the operation is complete. This signal is not generated until the data has been copied into our application buffer, which is different from the signal-driven I/O model.
 
-
-
-
-
-
-
-
-
-
-
-
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/dujingning/dujingning.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+**made by 杜竞宁 [click here to top](http://xpfan.top) 2019.8.3 星期六**

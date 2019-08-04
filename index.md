@@ -1,4 +1,4 @@
- Linux网络编程                                 [刷新](http://xpfan.top) [能看见伐？](dujingning.github.io/maybe.html)
+ Linux网络编程                                 [刷新](http://xpfan.top) 
 ## I/O多路复用总结(I/O Multiplexing)
 
 ### The `select` and `poll` Functions Introduction(select 与 poll函数介绍)

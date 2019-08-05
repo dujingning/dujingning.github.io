@@ -219,8 +219,38 @@ select modifies the descriptor sets pointed to by the readset, writeset, and exc
 The return value from this function indicates the total number of bits that are ready across all the descriptor sets. If the timer value expires before any of the descriptors are ready, a value of 0 is returned. A return value of –1 indicates an error (which can happen, for example, if the function is interrupted by a caught signal).
 
 
+# epoll
+**select, poll, epoll 都是I/O多路复用的具体的实现，之所以有这三个鬼存在，其实是他们出现是有先后顺序的。**
+作者：罗志宇
+链接：[IO 多路复用是什么意思？](https://www.zhihu.com/question/32163005/answer/55772739)
 
+### select 被实现以后，很快就暴露出了很多问题。
 
+select 会修改传入的参数数组，这个对于一个需要调用很多次的函数，是非常不友好的。
+select 如果任何一个sock(I/O stream)出现了数据，select 仅仅会返回，但是并不会告诉你是那个sock上有数据，于是你只能自己一个一个的找，10几个sock可能还好，要是几万的sock每次都找一遍，这个无谓的开销就颇有海天盛筵的豪气了。
+select 只能监视1024个链接， 这个跟草榴没啥关系哦，linux 定义在头文件中的，参见FD_SETSIZE。
+select 不是线程安全的，如果你把一个sock加入到select, 然后突然另外一个线程发现，尼玛，这个sock不用，要收回。对不起，这个select 不支持的，如果你丧心病狂的竟然关掉这个sock, select的标准行为是。。呃。。不可预测的， 这个可是写在文档中的哦.         
+
+“If a file descriptor being monitored by select() is closed in another thread, the result is     unspecified”
+
+14年以后(1997年）一帮人又实现了poll,  poll 修复了select的很多问题，比如
+
+poll 去掉了1024个链接的限制，于是要多少链接呢， 主人你开心就好。 
+poll 从设计上来说，不再修改传入数组，不过这个要看你的平台了，所以行走江湖，还是小心为妙。
+
+但是poll仍然不是线程安全的， 这就意味着，不管服务器有多强悍，你也只能在一个线程里面处理一组I/O流。你当然可以那多进程来配合了，不过然后你就有了多进程的各种问题。
+
+于是5年以后, 在2002, 大神 Davide Libenzi 实现了epoll.
+epoll 可以说是I/O 多路复用最新的一个实现，epoll 修复了poll 和select绝大部分问题, 比如：
+epoll 现在是线程安全的。 epoll 现在不仅告诉你sock组里面数据，还会告诉你具体哪个sock有数据，你不用自己去找了。
+
+epoll 当年的patch，现在还在，下面链接可以看得到
+[/dev/epoll Home Page](http://www.xmailserver.org/linux-patches/nio-improve.html)
+
+可是epoll 有个致命的缺点。。只有linux支持。比如BSD上面对应的实现是kqueue。
+如果可能的话，尽量都用epoll/kqueue吧。
+
+PS: 上面所有这些比较分析，都建立在大并发下面，如果你的并发数太少，用哪个，其实都没有区别。 如果像是在欧朋数据中心里面的转码服务器那种动不动就是几万几十万的并发，不用epoll我可以直接去撞墙了。
 
 **this is collected by 杜竞宁 -- [*click here to the top*](http://xpfan.top) -- 2019.8.3 星期六**
 

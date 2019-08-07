@@ -1,5 +1,5 @@
  Linux网络编程                                 [刷新](http://xpfan.top) 
-## I/O多路复用总结(I/O Multiplexing)    [in](dujingning.github.io/IO_multiplexing.md)
+## I/O多路复用总结(I/O Multiplexing)    [in](http://xpfan.top/IO_multiplexing.github.io/.)
 
 
 

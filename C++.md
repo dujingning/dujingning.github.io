@@ -1,3 +1,4 @@
+## friend function
 ```markdown
 #include <iostream>
 

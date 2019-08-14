@@ -5,6 +5,8 @@
 
 **this is collected by 杜竞宁 -- [*click here to the top*](http://xpfan.top) -- 2019.8.3 星期六**
 
+[my website log](http://xpfan.top/weblog.html)
+
 # end
 
 

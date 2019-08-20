@@ -6,6 +6,8 @@
 
 [经验网站收集](http://xpfan.top/weblog.html)
 
+[宿舍毕业纪念站](http://xpfan.top/djn.github.io/)(未完善)
+
 **this is collected by 杜竞宁 -- [*click here to the top*](http://xpfan.top) -- 2019.8.3 星期六**
 
 # end
